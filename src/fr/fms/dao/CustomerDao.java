@@ -49,15 +49,16 @@ public class CustomerDao implements Dao<Customer> {
 
 	@Override
 	public boolean update(Customer obj) {
-		String str = "UPDATE T_Customers SET UserLogin = ?, FirstName = ?, LastName = ?, Email = ?, Address = ?, Phone = ? WHERE IdFormation= " + obj.getIdCustomer() + ";";
-		
+		String str = "UPDATE T_Customers SET UserLogin = ?, FirstName = ?, LastName = ?, Email = ?, Address = ?, Phone = ? WHERE IdFormation= "
+				+ obj.getIdCustomer() + ";";
+
 		try (PreparedStatement ps = connection.prepareStatement(str)) {
 			ps.setString(1, obj.getUserLogin());
-			ps.setString(2,  obj.getFirstName());
-			ps.setString(3,  obj.getLastName());
-			ps.setString(4,  obj.getEmail());
-			ps.setString(5,  obj.getAddress());
-			ps.setString(6,  obj.getPhone());
+			ps.setString(2, obj.getFirstName());
+			ps.setString(3, obj.getLastName());
+			ps.setString(4, obj.getEmail());
+			ps.setString(5, obj.getAddress());
+			ps.setString(6, obj.getPhone());
 
 			if (ps.executeUpdate(str) == 1)
 				return true;
@@ -97,8 +98,9 @@ public class CustomerDao implements Dao<Customer> {
 					String rsEmail = resultSet.getString(5);
 					String rsAddress = resultSet.getString(6);
 					String rsPhone = resultSet.getString(7);
-					
-					customers.add(new Customer(rsId, rsUserLogin, rsFirstName, rsLastName, rsEmail, rsAddress, rsPhone));
+
+					customers
+							.add(new Customer(rsId, rsUserLogin, rsFirstName, rsLastName, rsEmail, rsAddress, rsPhone));
 				}
 			}
 		} catch (SQLException e) {
@@ -107,4 +109,20 @@ public class CustomerDao implements Dao<Customer> {
 		return customers;
 	}
 
+	public Customer findCustomerByEmail(String email) {
+		String strSql = "SELECT * FROM T_Customers where Email=?;";
+		try (PreparedStatement ps = connection.prepareStatement(strSql)) {
+			ps.setString(1, email);
+			try (ResultSet resultSet = ps.executeQuery()) {
+				if (resultSet.next()) {
+					return new Customer(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+							resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+							resultSet.getString(7));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

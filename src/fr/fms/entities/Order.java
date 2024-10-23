@@ -22,6 +22,10 @@ public class Order {
 		this.setIdCustomer(idCustomer);
 	}	
 	
+	public Order(double totalPrice, int idCustomer) {
+		this(0, new Date(new java.util.Date().getTime()), totalPrice, false, idCustomer);	
+	}
+	
 	/* ------------ ACCESSORS ------------ */
 	
 	public int getIdOrder() {

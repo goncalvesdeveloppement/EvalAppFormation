@@ -18,6 +18,10 @@ public class User {
 		this.setAdmin(admin);
 	}
 	
+	public User(String loginUser, String password) {
+		this(0, loginUser, password, false);
+	}
+	
 	/* ------------ ACCESSORS ------------ */
 
 	public int getIdUser() {

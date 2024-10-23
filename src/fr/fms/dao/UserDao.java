@@ -46,7 +46,7 @@ public class UserDao implements Dao<User> {
 	@Override
 	public boolean update(User obj) {
 		String str = "UPDATE T_Users set Login = ?, Password = ?, IsAdmin = ? WHERE IdUser = " + obj.getIdUser() + ";";
-		
+
 		try (PreparedStatement ps = connection.prepareStatement(str)) {
 			ps.setString(1, obj.getLoginUser());
 			ps.setString(2, obj.getPassword());
@@ -97,4 +97,30 @@ public class UserDao implements Dao<User> {
 		return users;
 	}
 
+	public User findUserByCredentials(String login, String password) {
+		String str = "SELECT * FROM T_Users where Login = ? and Password = ?;";
+		try (PreparedStatement ps = connection.prepareStatement(str)) {
+			ps.setString(1, login);
+			ps.setString(2, password);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next())
+				return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4));
+		} catch (SQLException e) {
+			logger.severe("pb sql sur renvoi d'un utilisateur à partir des credentials ");
+		}
+		return null;
+	}
+
+	public User findUserByLogin(String login) {
+		String str = "SELECT * FROM T_Users where Login = ?;";
+		try (PreparedStatement ps = connection.prepareStatement(str)) {
+			ps.setString(1, login);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next())
+				return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4));
+		} catch (SQLException e) {
+			logger.severe("pb sql sur renvoi d'un utilisateur à partir du login ");
+		}
+		return null;
+	}
 }

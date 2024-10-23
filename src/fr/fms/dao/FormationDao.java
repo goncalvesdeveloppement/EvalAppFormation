@@ -49,7 +49,8 @@ public class FormationDao implements Dao<Formation> {
 
 	@Override
 	public boolean update(Formation obj) {
-		String str = "UPDATE T_Formations set Name = ?, Description = ?, Duration = ?, IsRemoteWork = ?, Price = ?, IdCategory = ? WHERE idFormation=" + obj.getIdFormation() + ";";
+		String str = "UPDATE T_Formations set Name = ?, Description = ?, Duration = ?, IsRemoteWork = ?, Price = ?, IdCategory = ? WHERE idFormation="
+				+ obj.getIdFormation() + ";";
 
 		try (PreparedStatement ps = connection.prepareStatement(str)) {
 			ps.setString(1, obj.getName());
@@ -58,7 +59,7 @@ public class FormationDao implements Dao<Formation> {
 			ps.setBoolean(4, obj.isRemoteWork());
 			ps.setDouble(5, obj.getPrice());
 			ps.setInt(6, obj.getIdCategory());
-			
+
 			if (ps.executeUpdate(str) == 1)
 				return true;
 		} catch (SQLException e) {
@@ -86,6 +87,84 @@ public class FormationDao implements Dao<Formation> {
 	public ArrayList<Formation> readAll() {
 		ArrayList<Formation> formations = new ArrayList<Formation>();
 		String strSql = "SELECT * FROM T_Formations";
+
+		try (Statement statement = connection.createStatement()) {
+			try (ResultSet resultSet = statement.executeQuery(strSql)) {
+				while (resultSet.next()) {
+					int rsId = resultSet.getInt(1);
+					String rsName = resultSet.getString(2);
+					String rsDescription = resultSet.getString(3);
+					int rsDuration = resultSet.getInt(4);
+					boolean rsRemoteWork = resultSet.getBoolean(5);
+					double rsPrice = resultSet.getDouble(6);
+					int rsIdCategory = resultSet.getInt(7);
+
+					formations.add((new Formation(rsId, rsName, rsDescription, rsDuration, rsRemoteWork, rsPrice,
+							rsIdCategory)));
+				}
+			}
+		} catch (SQLException e) {
+			logger.severe("pb sql sur le renvoi de la liste des utilisateurs");
+		}
+		return formations;
+	}
+
+	public ArrayList<Formation> readAllByKeyWord(String keyword) {
+		ArrayList<Formation> formations = new ArrayList<Formation>();
+		String strSql = "SELECT * FROM T_Formations WHERE Name CONTAINS ? OR Description CONTAINS ?;";
+
+		try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+			statement.setString(1, keyword);
+			statement.setString(2, keyword);
+
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				int rsId = resultSet.getInt(1);
+				String rsName = resultSet.getString(2);
+				String rsDescription = resultSet.getString(3);
+				int rsDuration = resultSet.getInt(4);
+				boolean rsRemoteWork = resultSet.getBoolean(5);
+				double rsPrice = resultSet.getDouble(6);
+				int rsIdCategory = resultSet.getInt(7);
+
+				formations.add(
+						(new Formation(rsId, rsName, rsDescription, rsDuration, rsRemoteWork, rsPrice, rsIdCategory)));
+			}
+		} catch (SQLException e) {
+			logger.severe("pb sql sur le renvoi de la liste des utilisateurs");
+		}
+		return formations;
+	}
+
+	public ArrayList<Formation> readAllByRemoteWork(boolean remoteWork) {
+		ArrayList<Formation> formations = new ArrayList<Formation>();
+		String strSql = "SELECT * FROM T_Formations WHERE IsRemoteWork IS ?;";
+
+		try (PreparedStatement statement = connection.prepareStatement(strSql)) {
+			statement.setBoolean(1, remoteWork);
+
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				int rsId = resultSet.getInt(1);
+				String rsName = resultSet.getString(2);
+				String rsDescription = resultSet.getString(3);
+				int rsDuration = resultSet.getInt(4);
+				boolean rsRemoteWork = resultSet.getBoolean(5);
+				double rsPrice = resultSet.getDouble(6);
+				int rsIdCategory = resultSet.getInt(7);
+
+				formations.add(
+						(new Formation(rsId, rsName, rsDescription, rsDuration, rsRemoteWork, rsPrice, rsIdCategory)));
+			}
+		} catch (SQLException e) {
+			logger.severe("pb sql sur le renvoi de la liste des utilisateurs");
+		}
+		return formations;
+	}
+
+	public ArrayList<Formation> readAllByCat(int idCat) {
+		ArrayList<Formation> formations = new ArrayList<Formation>();
+		String strSql = "SELECT * FROM T_Formations WHERE IdCategory = " + idCat + ";";
 
 		try (Statement statement = connection.createStatement()) {
 			try (ResultSet resultSet = statement.executeQuery(strSql)) {

@@ -8,11 +8,11 @@ import fr.fms.entities.User;
 
 public class DaoFactory {
 	
-	public static Dao<Formation> getArticleDao() {
+	public static Dao<Formation> getFormationDao() {
 		return new FormationDao();		
 	}
 	
-	public static Dao<FormationOrder> getUserDao() {
+	public static Dao<FormationOrder> getFormationOrderDao() {
 		return new FormationOrderDao();
 	}
 	
@@ -24,7 +24,7 @@ public class DaoFactory {
  		return new OrderDao();
  	}
  	
- 	public static Dao<User> getOrderItemDao() {
+ 	public static Dao<User> getUserDao() {
  		return new UserDao();
  	}
  	

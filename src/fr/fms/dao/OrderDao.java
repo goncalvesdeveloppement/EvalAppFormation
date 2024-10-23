@@ -21,8 +21,21 @@ public class OrderDao implements Dao<Order> {
 			ps.setBoolean(3, obj.isPaymentOK());
 			ps.setInt(4, obj.getIdCustomer());
 
-			if (ps.executeUpdate() == 1)
+			if (ps.executeUpdate() == 1) {
+				
+				// Avoir directement le nouvel ID mis à jour dans l'objet
+				try (Statement statement = connection.createStatement()) {
+					String str = "SELECT LAST_INSERT_ID as id;";
+					ResultSet rs = statement.executeQuery(str);
+
+					if (rs.next())
+						obj.setIdOrder(rs.getInt(1));
+				} catch (SQLException e) {
+					logger.severe("pb sql sur la lecture d'une commande " + e.getMessage());
+				}
+				
 				return true;
+			}
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la création d'une commande");
 		}
@@ -89,7 +102,7 @@ public class OrderDao implements Dao<Order> {
 					int rsId = resultSet.getInt(1);
 					Date rsDate = resultSet.getDate(2);
 					Double rsTotalPrice = resultSet.getDouble(3);
-					boolean rsPaymentOK= resultSet.getBoolean(4);
+					boolean rsPaymentOK = resultSet.getBoolean(4);
 					int rsIdCustomer = resultSet.getInt(5);
 
 					orders.add(new Order(rsId, rsDate, rsTotalPrice, rsPaymentOK, rsIdCustomer));
