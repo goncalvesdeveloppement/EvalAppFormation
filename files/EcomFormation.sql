@@ -40,7 +40,8 @@ ALTER TABLE T_Formations ADD FOREIGN KEY(IdCategory) REFERENCES T_Categories(IdC
 -- ---------------------------------------------------------------------------------------------------
 
 CREATE TABLE T_Users (
-	LoginUser		VARCHAR(20)	PRIMARY KEY,
+	IdUser			INT(4)		PRIMARY KEY AUTO_INCREMENT,
+	LoginUser		VARCHAR(20)	NOT NULL UNIQUE,
 	Password		VARCHAR(20)	NOT NULL,
 	IsAdmin			BOOLEAN 	NOT NULL DEFAULT false
 ) ENGINE = InnoDB;
@@ -62,8 +63,8 @@ CREATE TABLE T_Customers (
 -- - Relation client/utilisateur
 -- ---------------------------------------------------------------------------------------------------
 
-ALTER TABLE T_Customers ADD COLUMN LoginUser VARCHAR(20);
-ALTER TABLE T_Customers ADD FOREIGN KEY(LoginUser) REFERENCES T_Users(LoginUser);
+ALTER TABLE T_Customers ADD COLUMN IdUser INT(4);
+ALTER TABLE T_Customers ADD FOREIGN KEY(IdUser) REFERENCES T_Users(IdUser);
 
 -- ---------------------------------------------------------------------------------------------------
 -- - Construction des commandes
@@ -75,6 +76,13 @@ CREATE TABLE T_Orders (
 	TotalPrice		FLOAT(8)	NOT NULL DEFAULT 0,
 	PaymentOK		BOOLEAN		DEFAULT false
 ) ENGINE = InnoDB;
+
+-- ---------------------------------------------------------------------------------------------------
+-- - Relation commande/client
+-- ---------------------------------------------------------------------------------------------------
+
+ALTER TABLE T_Orders ADD COLUMN IdCustomer INT(4);
+ALTER TABLE T_Orders ADD FOREIGN KEY(IdCustomer) REFERENCES T_Customers(IdCustomer);
 
 -- ---------------------------------------------------------------------------------------------------
 -- - Construction de la table de jointure commande/formation
