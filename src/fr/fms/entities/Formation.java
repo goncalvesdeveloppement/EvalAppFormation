@@ -21,7 +21,7 @@ public class Formation {
 		this.setDescription(description);
 		this.setDuration(duration);
 		this.setRemoteWork(isRemoteWork);
-		this.setPrice(price);;
+		this.setPrice(price);
 		this.setIdCategory(idCategory);
 	}
 	

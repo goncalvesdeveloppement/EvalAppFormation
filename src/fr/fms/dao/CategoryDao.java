@@ -17,8 +17,21 @@ public class CategoryDao implements Dao<Category> {
 		try (PreparedStatement ps = connection.prepareStatement(sqlQuery)) {
 			ps.setString(1, obj.getTitle());
 
-			if (ps.executeUpdate() == 1)
+			if (ps.executeUpdate() == 1) {
+				
+				// Avoir directement le nouvel ID mis à jour dans l'objet
+				try (Statement statement = connection.createStatement()) {
+					String str = "SELECT LAST_INSERT_ID() as id;";
+					ResultSet rs = statement.executeQuery(str);
+
+					if (rs.next())
+						obj.setIdCategory(rs.getInt(1));
+				} catch (SQLException e) {
+					logger.severe("pb sql sur la lecture d'une catégorie " + e.getMessage());
+				}
+				
 				return true;
+			}
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la création d'une catégorie");
 		}
@@ -47,7 +60,7 @@ public class CategoryDao implements Dao<Category> {
 		try (PreparedStatement ps = connection.prepareStatement(str)) {
 			ps.setString(1, obj.getTitle());
 
-			if (ps.executeUpdate(str) == 1)
+			if (ps.executeUpdate() == 1)
 				return true;
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la mise à jour d'une catégorie " + e.getMessage());

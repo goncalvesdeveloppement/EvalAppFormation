@@ -22,8 +22,21 @@ public class CustomerDao implements Dao<Customer> {
 			ps.setString(5, obj.getAddress());
 			ps.setString(6, obj.getPhone());
 
-			if (ps.executeUpdate() == 1)
+			if (ps.executeUpdate() == 1) {
+				
+				// Avoir directement le nouvel ID mis à jour dans l'objet
+				try (Statement statement = connection.createStatement()) {
+					String str = "SELECT LAST_INSERT_ID() as id;";
+					ResultSet rs = statement.executeQuery(str);
+
+					if (rs.next())
+						obj.setIdCustomer(rs.getInt(1));
+				} catch (SQLException e) {
+					logger.severe("pb sql sur la lecture d'un client " + e.getMessage());
+				}
+				
 				return true;
+			}
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la création d'un client");
 		}
@@ -60,7 +73,7 @@ public class CustomerDao implements Dao<Customer> {
 			ps.setString(5, obj.getAddress());
 			ps.setString(6, obj.getPhone());
 
-			if (ps.executeUpdate(str) == 1)
+			if (ps.executeUpdate() == 1)
 				return true;
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la mise à jour d'un client " + e.getMessage());

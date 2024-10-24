@@ -12,15 +12,28 @@ public class UserDao implements Dao<User> {
 
 	@Override
 	public boolean create(User obj) {
-		String sqlQuery = "INSERT INTO T_Users(Login, Password, IsAdmin) VALUES(?, ?, ?);";
+		String sqlQuery = "INSERT INTO T_Users(LoginUser, Password, IsAdmin) VALUES(?, ?, ?);";
 
 		try (PreparedStatement ps = connection.prepareStatement(sqlQuery)) {
 			ps.setString(1, obj.getLoginUser());
 			ps.setString(2, obj.getPassword());
 			ps.setBoolean(3, obj.isAdmin());
 
-			if (ps.executeUpdate() == 1)
+			if (ps.executeUpdate() == 1) {
+				
+				// Avoir directement le nouvel ID mis à jour dans l'objet
+				try (Statement statement = connection.createStatement()) {
+					String str = "SELECT LAST_INSERT_ID() as id;";
+					ResultSet rs = statement.executeQuery(str);
+
+					if (rs.next())
+						obj.setIdUser(rs.getInt(1));
+				} catch (SQLException e) {
+					logger.severe("pb sql sur la lecture d'un user " + e.getMessage());
+				}
+				
 				return true;
+			}
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la création d'un user");
 		}
@@ -45,14 +58,14 @@ public class UserDao implements Dao<User> {
 
 	@Override
 	public boolean update(User obj) {
-		String str = "UPDATE T_Users set Login = ?, Password = ?, IsAdmin = ? WHERE IdUser = " + obj.getIdUser() + ";";
+		String str = "UPDATE T_Users set LoginUser = ?, Password = ?, IsAdmin = ? WHERE IdUser = " + obj.getIdUser() + ";";
 
 		try (PreparedStatement ps = connection.prepareStatement(str)) {
 			ps.setString(1, obj.getLoginUser());
 			ps.setString(2, obj.getPassword());
 			ps.setBoolean(3, obj.isAdmin());
 
-			if (ps.executeUpdate(str) == 1)
+			if (ps.executeUpdate() == 1)
 				return true;
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la mise à jour d'un user " + e.getMessage());
@@ -98,7 +111,7 @@ public class UserDao implements Dao<User> {
 	}
 
 	public User findUserByCredentials(String login, String password) {
-		String str = "SELECT * FROM T_Users where Login = ? and Password = ?;";
+		String str = "SELECT * FROM T_Users where LoginUser = ? and Password = ?;";
 		try (PreparedStatement ps = connection.prepareStatement(str)) {
 			ps.setString(1, login);
 			ps.setString(2, password);
@@ -112,7 +125,7 @@ public class UserDao implements Dao<User> {
 	}
 
 	public User findUserByLogin(String login) {
-		String str = "SELECT * FROM T_Users where Login = ?;";
+		String str = "SELECT * FROM T_Users where LoginUser = ?;";
 		try (PreparedStatement ps = connection.prepareStatement(str)) {
 			ps.setString(1, login);
 			ResultSet rs = ps.executeQuery();

@@ -25,7 +25,7 @@ public class OrderDao implements Dao<Order> {
 				
 				// Avoir directement le nouvel ID mis à jour dans l'objet
 				try (Statement statement = connection.createStatement()) {
-					String str = "SELECT LAST_INSERT_ID as id;";
+					String str = "SELECT LAST_INSERT_ID() as id;";
 					ResultSet rs = statement.executeQuery(str);
 
 					if (rs.next())

@@ -47,12 +47,12 @@ public class DBAccess {
 		Properties props = new Properties();		
 		try (FileInputStream fis = new FileInputStream("files/config.properties")){
 			props.load(fis);
-			System.out.println("coucou");
 		} catch (FileNotFoundException e1) {
 			logger.severe("Fichier de config non trouvé " + e1.getMessage());
 		} catch (IOException e1) {
 			logger.severe("Erreur lecture fichier config " + e1.getMessage());
 		}		
+		
 		driver = props.getProperty("db.driver");
 		url = props.getProperty("db.url");
 		login = props.getProperty("db.login");

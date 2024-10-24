@@ -18,8 +18,21 @@ public class FormationOrderDao implements Dao<FormationOrder> {
 			ps.setInt(1, obj.getIdFormation());
 			ps.setInt(2, obj.getIdOrder());
 
-			if (ps.executeUpdate() == 1)
+			if (ps.executeUpdate() == 1) {
+				
+				// Avoir directement le nouvel ID mis à jour dans l'objet
+				try (Statement statement = connection.createStatement()) {
+					String str = "SELECT LAST_INSERT_ID() as id;";
+					ResultSet rs = statement.executeQuery(str);
+
+					if (rs.next())
+						obj.setIdFormationOrder(rs.getInt(1));
+				} catch (SQLException e) {
+					logger.severe("pb sql sur la lecture d'une F/O " + e.getMessage());
+				}
+				
 				return true;
+			}
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la création d'une F/O");
 		}
@@ -51,7 +64,7 @@ public class FormationOrderDao implements Dao<FormationOrder> {
 			ps.setInt(2, obj.getIdOrder());
 			ps.setInt(3, obj.getQuantity());
 
-			if (ps.executeUpdate(str) == 1)
+			if (ps.executeUpdate() == 1)
 				return true;
 		} catch (SQLException e) {
 			logger.severe("pb sql sur la mise à jour d'une F/O " + e.getMessage());

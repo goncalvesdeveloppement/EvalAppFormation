@@ -142,5 +142,5 @@ SELECT * FROM T_FormationOrders;
 -- ---------------------------------------------------------------------------------------------------
 
 CREATE USER 'ecom_master'@'localhost' IDENTIFIED BY 'form999';
-GRANT ALL PRIVILEGES ON EcomFormation.* TO 'antho'@'localhost';
+GRANT ALL PRIVILEGES ON EcomFormation.* TO 'ecom_master'@'localhost';
 FLUSH PRIVILEGES;

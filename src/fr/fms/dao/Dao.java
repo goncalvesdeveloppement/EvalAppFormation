@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import fr.fms.entities.Formation;
-
 public interface Dao<T> {
 	public static Connection connection = DBAccess.getConnection();
 	public static final Logger logger = Logger.getLogger(Dao.class.getName());

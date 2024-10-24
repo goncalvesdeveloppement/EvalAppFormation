@@ -9,7 +9,6 @@ import fr.fms.dao.DaoFactory;
 import fr.fms.dao.FormationDao;
 import fr.fms.entities.Formation;
 import fr.fms.entities.Category;
-import fr.fms.entities.Customer;
 import fr.fms.entities.Order;
 import fr.fms.entities.FormationOrder;
 import fr.fms.entities.User;
